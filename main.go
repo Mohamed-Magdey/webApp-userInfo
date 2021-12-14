@@ -1,7 +1,13 @@
 package main
 
-import "fmt"
+import (
+	"net/http"
+	"webApp/userInfo/handlers"
+)
 
 func main() {
-	fmt.Println("Hello Wrold!!!")
+
+	http.HandleFunc("/", handlers.IndexFunc)
+
+	http.ListenAndServe(":8080", nil)
 }
