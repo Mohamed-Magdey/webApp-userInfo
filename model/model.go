@@ -38,6 +38,7 @@ type AllUsers struct {
 func ShowAllUsers() (au *AllUsers) {
 	file, err := os.OpenFile("list.json", os.O_RDWR|os.O_APPEND, 0666)
 	checkError(err)
+	defer file.Close()
 	b, err := ioutil.ReadAll(file)
 	var alUsrs AllUsers
 	json.Unmarshal(b, &alUsrs.Users)
