@@ -15,5 +15,10 @@ func main() {
 	http.HandleFunc("/addnewuser/", handlers.AddNewUserFunc)
 	http.HandleFunc("/notsucceded", handlers.NotSucceded)
 
+	http.HandleFunc("/deleted", handlers.DeletedFunc)
+	http.HandleFunc("/deleteuser/deleted", handlers.DeleteUserFunc)
+	http.HandleFunc("/deleteuser/", handlers.DeleteUserServe)
+	http.HandleFunc("/deleteuser/notsuccededdelete", handlers.NotSuccededDelete)
+
 	http.ListenAndServe(":8080", nil)
 }
