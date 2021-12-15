@@ -12,5 +12,8 @@ func main() {
 	http.HandleFunc("/showuser/", handlers.ShowUser)
 	http.HandleFunc("/showuser/notsuccededshow/", handlers.NotSuccededShow)
 
+	http.HandleFunc("/addnewuser/", handlers.AddNewUserFunc)
+	http.HandleFunc("/notsucceded", handlers.NotSucceded)
+
 	http.ListenAndServe(":8080", nil)
 }
