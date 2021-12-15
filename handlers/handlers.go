@@ -28,7 +28,6 @@ func IndexFunc(w http.ResponseWriter, r *http.Request) {
 
 //handler to show user with id input
 func ShowUserFunc(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(r.Method)
 	if r.Method == "GET" {
 		t, _ := template.ParseFiles("templates/showUserPage.html")
 		t.Execute(w, nil)
@@ -150,4 +149,65 @@ func AddNewUserFunc(w http.ResponseWriter, r *http.Request) {
 //serving file with error (add function:empty field input or uncorrect input)
 func NotSucceded(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "templates/notSucceded.html")
+}
+
+//function to handle page with successful deletion
+func DeletedFunc(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "templates/deleted.html")
+}
+
+//function to delete user
+func DeleteUserFunc(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		t, _ := template.ParseFiles("templates/deleteUser.html")
+		t.Execute(w, nil)
+	} else {
+		r.ParseForm()
+		id, err := strconv.Atoi(r.FormValue("id"))
+		checkError(err)
+
+		//open file with users
+		file, err := os.OpenFile("list.json", os.O_RDWR|os.O_APPEND, 0666)
+		checkError(err)
+		defer file.Close()
+
+		//read file and unmarshall json to []users
+		b, err := ioutil.ReadAll(file)
+		checkError(err)
+		var alUsrs model.AllUsers
+		err = json.Unmarshal(b, &alUsrs.Users)
+		checkError(err)
+
+		var allID []int
+		for _, usr := range alUsrs.Users {
+			allID = append(allID, usr.Id)
+		}
+		for i, usr := range alUsrs.Users {
+			if !model.IsValueInSlice(allID, id) {
+				http.Redirect(w, r, "/deleteuser/notsuccededdelete", http.StatusFound)
+				return
+			}
+			if usr.Id != id {
+				continue
+			} else {
+				alUsrs.Users = append(alUsrs.Users[:i], alUsrs.Users[i+1:]...)
+			}
+
+		}
+		newUserBytes, err := json.MarshalIndent(&alUsrs.Users, "", " ")
+		checkError(err)
+		ioutil.WriteFile("list.json", newUserBytes, 0666)
+		http.Redirect(w, r, "/deleted", http.StatusMovedPermanently)
+	}
+}
+
+//function,which serve page with delete information input
+func DeleteUserServe(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "templates/deleteUser.html")
+
+}
+
+//function,which serve html file,when deleting was not succesful(id input is not correct)
+func NotSuccededDelete(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "templates/notSuccededDelete.html")
 }
