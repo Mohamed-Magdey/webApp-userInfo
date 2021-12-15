@@ -7,6 +7,7 @@ import (
 
 func main() {
 	http.HandleFunc("/", handlers.IndexFunc)
+	http.HandleFunc("/api", handlers.Api)
 
 	http.HandleFunc("/showuser/show", handlers.ShowUserFunc)
 	http.HandleFunc("/showuser/", handlers.ShowUser)
