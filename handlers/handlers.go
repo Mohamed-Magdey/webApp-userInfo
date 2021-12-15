@@ -211,3 +211,7 @@ func DeleteUserServe(w http.ResponseWriter, r *http.Request) {
 func NotSuccededDelete(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "templates/notSuccededDelete.html")
 }
+
+func Api(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "list.json")
+}
